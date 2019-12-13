@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>2.2.1.RELEASE</version>
+  </parent>
+  <groupId>com.snailman</groupId>
+  <artifactId>thebeerapp</artifactId>
+  <packaging>jar</packaging>
+  <version>1.0.0-SNAPSHOT</version>
+  <properties>
+    <checkstyle.version>8.18</checkstyle.version>
+    <dockerfile.maven.version>1.4.10</dockerfile.maven.version>
+    <jacoco.version>0.8.3</jacoco.version>
+    <joelittlejohn.embedmongo.version>0.4.1</joelittlejohn.embedmongo.version>
+    <maven-checkstyle.version>3.0.0</maven-checkstyle.version>
+    <maven-failsafe.version>3.0.0-M3</maven-failsafe.version>
+    <maven-surefire.version>3.0.0-M3</maven-surefire.version>
+    <maven.properties.plugin.version>1.0.0</maven.properties.plugin.version>
+    <pmd.version>3.11.0</pmd.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>${project.build.sourceEncoding}</project.reporting.outputEncoding>
+    <spotbugs.version>3.1.11</spotbugs.version>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-mongodb</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+  </dependencies>
+  <build>
+    <finalName>${project.artifactId}</finalName>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>${jacoco.version}</version>
+          <executions>
+            <execution>
+              <id>default-prepare-agent</id>
+              <goals>
+                <goal>prepare-agent</goal>
+              </goals>
+            </execution>
+            <execution>
+              <id>default-prepare-agent-integration</id>
+              <goals>
+                <goal>prepare-agent-integration</goal>
+              </goals>
+            </execution>
+            <execution>
+              <id>default-report</id>
+              <goals>
+                <goal>report</goal>
+              </goals>
+            </execution>
+            <execution>
+              <id>default-report-integration</id>
+              <goals>
+                <goal>report-integration</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${maven-surefire.version}</version>
+          <configuration>
+            <systemPropertyVariables>
+              <mongo.port>${embedmongo.port}</mongo.port>
+            </systemPropertyVariables>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <version>${maven-failsafe.version}</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>integration-test</goal>
+                <goal>verify</goal>
+              </goals>
+              <configuration>
+                <systemPropertyVariables>
+                  <mongo.port>${embedmongo.port}</mongo.port>
+                </systemPropertyVariables>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+      	  <groupId>com.github.spotbugs</groupId>
+  	      <artifactId>spotbugs-maven-plugin</artifactId>
+          <version>${spotbugs.version}</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-pmd-plugin</artifactId>
+          <version>${pmd.version}</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>check</goal>
+              </goals>
+            </execution>
+          </executions>
+          <configuration>
+            <verbose>true</verbose>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-checkstyle-plugin</artifactId>
+          <version>${maven-checkstyle.version}</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>check</goal>
+              </goals>
+            </execution>
+          </executions>
+          <configuration>
+            <consoleOutput>true</consoleOutput>
+            <checkstyleRules>
+              <module name="Checker">
+                <property name="charset" value="UTF-8" />
+                <property name="severity" value="warning" />
+                <module name="FileTabCharacter" />
+                <module name="TreeWalker">
+                  <property name="fileExtensions" value="java" />
+                  <module name="ArrayTypeStyle">
+                    <property name="javaStyle" value="true" />
+                  </module>
+                  <module name="AvoidStarImport" />
+                  <module name="AvoidStaticImport" />
+                  <module name="EmptyBlock">
+                    <property name="option" value="stmt" />
+                  </module>
+                  <module name="GenericWhitespace" />
+                  <module name="Indentation">
+                    <property name="basicOffset" value="2" />
+                    <property name="braceAdjustment" value="0" />
+                    <property name="caseIndent" value="2" />
+                    <property name="throwsIndent" value="2" />
+                    <property name="arrayInitIndent" value="2" />
+                    <property name="lineWrappingIndentation" value="2" />
+                  </module>
+                  <module name="IllegalImport" />
+                  <module name="ImportOrder">
+                    <property name="separated" value="true" />
+                  </module>
+                  <module name="InnerAssignment" />
+                  <module name="JavadocType">
+                    <property name="allowUnknownTags" value="false" />
+                    <property name="scope" value="private" />
+                  </module>
+                  <module name="JavadocMethod">
+                    <property name="allowMissingJavadoc" value="false" />
+                    <property name="allowMissingParamTags" value="false" />
+                    <property name="allowMissingPropertyJavadoc" value="true" />
+                    <property name="allowMissingReturnTag" value="false" />
+                    <property name="allowMissingThrowsTags" value="false" />
+                    <property name="allowUndeclaredRTE" value="false" />
+                    <property name="allowedAnnotations" value="Override" />
+                    <property name="minLineCount" value="-1" />
+                    <property name="scope" value="private" />
+                    <property name="validateThrows" value="true" />
+                  </module>
+                  <module name="LeftCurly">
+                    <property name="maxLineLength" value="85" />
+                    <property name="option" value="eol" />
+                  </module>
+                  <module name="LineLength">
+                    <property name="ignorePattern" value="^import" />
+                    <property name="max" value="140" />
+                  </module>
+                  <module name="MethodParamPad">
+                    <property name="allowLineBreaks" value="false" />
+                    <property name="option" value="nospace" />
+                  </module>
+                  <module name="MissingOverride">
+                    <property name="javaFiveCompatibility" value="false" />
+                  </module>
+                  <module name="MultipleVariableDeclarations" />
+                  <module name="NeedBraces" />
+                  <module name="NonEmptyAtclauseDescription" />
+                  <module name="OneStatementPerLine" />
+                  <module name="OneTopLevelClass" />
+                  <module name="OuterTypeFilename" />
+                  <module name="PackageDeclaration" />
+                  <module name="ParenPad">
+                    <property name="option" value="nospace" />
+                  </module>
+                  <module name="RedundantImport" />
+                  <module name="RedundantModifier" />
+                  <module name="RequireThis">
+                    <property name="checkFields" value="false" />
+                    <property name="checkMethods" value="true" />
+                  </module>
+                  <module name="RightCurly" />
+                  <module name="StringLiteralEquality" />
+                  <module name="TodoComment">
+                    <property name="format" value="TODO " />
+                    <property name="severity" value="warning" />
+                  </module>
+                  <module name="TrailingComment" />
+                  <module name="UnusedImports" />
+                  <module name="VisibilityModifier">
+                    <property name="packageAllowed" value="false" />
+                    <property name="protectedAllowed" value="false" />
+                  </module>
+                  <module name="WhitespaceAfter">
+                    <property name="tokens" value="COMMA, TYPECAST" />
+                  </module>
+                </module>
+              </module>
+            </checkstyleRules>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-maven-plugin</artifactId>
+        </plugin>
+        <plugin>
+          <groupId>com.github.joelittlejohn.embedmongo</groupId>
+          <artifactId>embedmongo-maven-plugin</artifactId>
+          <version>${joelittlejohn.embedmongo.version}</version>
+          <configuration>
+            <logging>none</logging>
+          </configuration>
+          <executions>
+            <execution>
+              <id>integration-start</id>
+              <phase>pre-integration-test</phase>
+              <goals>
+                <goal>start</goal>
+              </goals>
+              <configuration>
+                <randomPort>true</randomPort>
+              </configuration>
+            </execution>
+            <execution>
+              <id>integration-stop</id>
+              <phase>post-integration-test</phase>
+              <goals>
+                <goal>stop</goal>
+              </goals>
+            </execution>
+            <execution>
+              <id>unit-start</id>
+              <phase>process-test-classes</phase>
+              <goals>
+                <goal>start</goal>
+              </goals>
+              <configuration>
+                <randomPort>true</randomPort>
+              </configuration>
+            </execution>
+            <execution>
+              <id>unit-stop</id>
+              <phase>test</phase>
+             <goals>
+                <goal>stop</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>com.spotify</groupId>
+          <artifactId>dockerfile-maven-plugin</artifactId>
+          <version>${dockerfile.maven.version}</version>
+          <executions>
+            <execution>
+              <id>build</id>
+              <phase>install</phase>
+              <goals>
+                <goal>build</goal>
+                <goal>tag</goal>
+              </goals>
+              <configuration>
+                <tag>latest</tag>
+              </configuration>
+            </execution>
+            <execution>
+              <id>tag-latest</id>
+              <phase>deploy</phase>
+              <goals>
+                <goal>tag</goal>
+                <goal>push</goal>
+              </goals>
+              <configuration>
+                <tag>latest</tag>
+              </configuration>
+            </execution>
+            <execution>
+              <id>tag-version</id>
+              <phase>deploy</phase>
+              <goals>
+                <goal>tag</goal>
+                <goal>push</goal>
+              </goals>
+              <configuration>
+                <tag>${project.verison}</tag>
+              </configuration>
+            </execution>
+          </executions>
+          <configuration>
+            <repository>${project.groupId}/${project.artifactId}</repository>
+            <buildArgs>
+              <FROM_PREFIX>${project.groupId}</FROM_PREFIX>
+            </buildArgs>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-failsafe-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-pmd-plugin</artifactId>
+      </plugin>
+      <plugin>
+      	<groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>com.spotify</groupId>
+        <artifactId>dockerfile-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+</project>
